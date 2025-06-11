@@ -18,9 +18,4 @@ This is a simple GUI-based **To-Do List application** developed in **Python** us
 - Python 3.6 or higher
 - Tkinter (comes built-in with standard Python distributions)
 
-## 🧑‍💻 How to Run
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/VikashReddy24/todo-list-app.git
-   cd todo-list-app
