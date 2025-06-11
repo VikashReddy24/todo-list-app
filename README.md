@@ -22,5 +22,5 @@ This is a simple GUI-based **To-Do List application** developed in **Python** us
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/todo-list-app.git
+   git clone https://github.com/VikashReddy24/todo-list-app.git
    cd todo-list-app
