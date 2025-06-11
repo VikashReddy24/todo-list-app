@@ -7,7 +7,7 @@ This is a simple GUI-based **To-Do List application** developed in **Python** us
 - ✅ Add new tasks
 - 🗑️ Delete selected tasks
 - ✔️ Mark tasks as completed
-- 💾 Save tasks to a file (`tasks.txt`)
+- 💾 Save tasks to a file (`todo_data.txt`)
 - 🔁 Load saved tasks on startup
 
 ## 📸 Preview
