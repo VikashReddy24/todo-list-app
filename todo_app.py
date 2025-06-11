@@ -2,78 +2,80 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 
-TASKS_FILE = "tasks.txt"
+DATA_FILE = "todo_data.txt"
 
-class ToDoApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("To-Do List App")
-        self.root.geometry("600x600")
+class TaskManager:
+    def __init__(self, master):
+        self.master = master
+        master.title("To-Do List")
+        master.geometry("420x450")
 
-        # Entry widget for new task
-        self.task_entry = tk.Entry(self.root, width=30)
-        self.task_entry.pack(pady=10)
+        self.create_widgets()
+        self.load_data()
 
-        # Add Task button
-        self.add_button = tk.Button(self.root, text="Add Task", width=20, command=self.add_task)
-        self.add_button.pack(pady=5)
+    def create_widgets(self):
+        # Input field
+        self.input_field = tk.Entry(self.master, font=('Arial', 12), width=35)
+        self.input_field.pack(pady=12)
 
-        # Listbox to display tasks
-        self.task_listbox = tk.Listbox(self.root, width=50, height=10, selectmode=tk.SINGLE)
-        self.task_listbox.pack(pady=10)
+        # Add task button
+        self.add_btn = tk.Button(self.master, text="Add Task", width=18, command=self.add_item)
+        self.add_btn.pack()
 
-        # Buttons for delete and mark done
-        self.delete_button = tk.Button(self.root, text="Delete Task", width=20, command=self.delete_task)
-        self.delete_button.pack(pady=5)
+        # Listbox to show tasks
+        self.task_box = tk.Listbox(self.master, width=45, height=12, selectmode=tk.SINGLE, font=('Arial', 10))
+        self.task_box.pack(pady=10)
 
-        self.mark_done_button = tk.Button(self.root, text="Mark as Done", width=20, command=self.mark_done)
-        self.mark_done_button.pack(pady=5)
+        # Buttons
+        btn_frame = tk.Frame(self.master)
+        btn_frame.pack(pady=5)
 
-        # Load tasks from file
-        self.load_tasks()
+        self.complete_btn = tk.Button(btn_frame, text="Mark Done", width=15, command=self.mark_task)
+        self.complete_btn.grid(row=0, column=0, padx=5)
 
-    def add_task(self):
-        task = self.task_entry.get().strip()
-        if task:
-            self.task_listbox.insert(tk.END, task)
-            self.task_entry.delete(0, tk.END)
-            self.save_tasks()
+        self.remove_btn = tk.Button(btn_frame, text="Remove Task", width=15, command=self.remove_item)
+        self.remove_btn.grid(row=0, column=1, padx=5)
+
+    def add_item(self):
+        task_text = self.input_field.get().strip()
+        if task_text:
+            self.task_box.insert(tk.END, task_text)
+            self.input_field.delete(0, tk.END)
+            self.save_data()
         else:
-            messagebox.showwarning("Input Error", "Please enter a task.")
+            messagebox.showwarning("Empty Field", "Please enter a task before adding.")
 
-    def delete_task(self):
-        selected = self.task_listbox.curselection()
+    def remove_item(self):
+        selected = self.task_box.curselection()
         if selected:
-            self.task_listbox.delete(selected)
-            self.save_tasks()
+            self.task_box.delete(selected[0])
+            self.save_data()
         else:
-            messagebox.showwarning("Selection Error", "Please select a task to delete.")
+            messagebox.showwarning("No Selection", "Choose a task to remove.")
 
-    def mark_done(self):
-        selected = self.task_listbox.curselection()
+    def mark_task(self):
+        selected = self.task_box.curselection()
         if selected:
-            task = self.task_listbox.get(selected)
-            if not task.startswith("✔ "):
-                self.task_listbox.delete(selected)
-                self.task_listbox.insert(selected, f"✔ {task}")
-                self.save_tasks()
+            task = self.task_box.get(selected)
+            if not task.startswith("[✓] "):
+                self.task_box.delete(selected)
+                self.task_box.insert(selected, "[✓] " + task)
+                self.save_data()
         else:
-            messagebox.showwarning("Selection Error", "Please select a task to mark as done.")
+            messagebox.showwarning("No Selection", "Choose a task to mark as done.")
 
-    def save_tasks(self):
-        with open(TASKS_FILE, "w", encoding="utf-8") as f:
-            tasks = self.task_listbox.get(0, tk.END)
-            for task in tasks:
-                f.write(task + "\n")
+    def save_data(self):
+        with open(DATA_FILE, "w", encoding="utf-8") as file:
+            for index in range(self.task_box.size()):
+                file.write(self.task_box.get(index) + "\n")
 
-    def load_tasks(self):
-        if os.path.exists(TASKS_FILE):
-            with open(TASKS_FILE, "r", encoding="utf-8") as f:
-                tasks = f.readlines()
-                for task in tasks:
-                    self.task_listbox.insert(tk.END, task.strip())
+    def load_data(self):
+        if os.path.exists(DATA_FILE):
+            with open(DATA_FILE, "r", encoding="utf-8") as file:
+                for line in file:
+                    self.task_box.insert(tk.END, line.strip())
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = ToDoApp(root)
+    app = TaskManager(root)
     root.mainloop()
